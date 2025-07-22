@@ -1,7 +1,6 @@
 package org.example.employeemanagement.Controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import org.example.employeemanagement.Api.ApiResponse;
 import org.example.employeemanagement.Model.Employee;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,12 @@ public class EmployeeController {
 
 
     @GetMapping("/show")
-    public ResponseEntity getEmployees(){
+    public ResponseEntity<?> getEmployees(){
         return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
     @PostMapping("/add")
-    public ResponseEntity addEmployee(@Valid @RequestBody Employee employee, Errors error){
+    public ResponseEntity<?> addEmployee(@Valid @RequestBody Employee employee, Errors error){
         if (error.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getFieldError().getDefaultMessage());
         }else {
@@ -32,6 +31,21 @@ public class EmployeeController {
             employees.add(employee);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee add successfully"));
         }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEmployee(@PathVariable String id, @Valid @RequestBody Employee employee, Errors error){
+        if (error.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getFieldError().getDefaultMessage());
+        }else {
+            for (int i = 0; i<employees.size(); i++){
+                if (employees.get(i).getId().equals(id)){
+                    employees.set(i, employee);
+                    return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee updated successfully"));
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("employee not found"));
     }
 
 

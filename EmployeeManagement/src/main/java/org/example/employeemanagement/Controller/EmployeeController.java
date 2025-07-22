@@ -114,4 +114,22 @@ public class EmployeeController {
         }
     }
 
+
+    @PutMapping("/annual-leave/{id}")
+    public ResponseEntity<?> applyForAnnualLeave(@PathVariable String id){
+        for (Employee e : employees){
+            if (e.getId().equals(id)){
+                if (e.getOnLeave().equals("false")){
+                    if(e.getAnnualLeave() >= 1){
+                        e.setOnLeave("true");
+                        e.setAnnualLeave(e.getAnnualLeave()-1);
+                        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee is updated enjoy in you vacation"));
+                    }
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee is on leave now"));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee not found"));
+    }
+
 }

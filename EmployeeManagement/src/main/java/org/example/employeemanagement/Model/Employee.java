@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class Employee {
 
     @NotEmpty
     @Size(min = 4, message = "name must have four chars length")
-    @Pattern(regexp = "[\\w]+")
+    @Pattern(regexp = "[A-Za-z]+", message = "name must contains only chars")
     private String name;
 
     @NotEmpty
@@ -42,12 +42,12 @@ public class Employee {
     private String position;
 
     @NotEmpty
-    private boolean onLeave;
+    @Pattern(regexp = "(false|true)")
+    private String onLeave;
 
-    @NotEmpty
     @PastOrPresent
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDate hireDate;
+    private LocalDateTime hireDate;
 
     @NotNull
     @Positive

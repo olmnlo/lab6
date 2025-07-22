@@ -143,4 +143,40 @@ public class EmployeeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(notHaveAnnual);
     }
+
+
+    @PutMapping("/promote/requester/{idOfRequester}/employee/{idOfCoordinator}")
+    public ResponseEntity<?> promoteEmployee(@PathVariable String idOfCoordinator,@PathVariable String idOfRequester){
+        int supervisor = findById(idOfRequester);
+        int coordinator = findById(idOfCoordinator);
+        if(supervisor == -1 || coordinator == -1){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("id is not exist"));
+        }
+        if(supervisor == coordinator){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("you cannot promote yourself"));
+        }
+        if (!employees.get(supervisor).getPosition().equals("supervisor")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("you are not supervisor"));
+        }
+        if (employees.get(coordinator).getAge() >= 30 && employees.get(coordinator).getOnLeave().equals("false") && !employees.get(coordinator).getPosition().equals("supervisor")){
+            employees.get(coordinator).setPosition("supervisor");
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee position updated"));
+        }else if (employees.get(coordinator).getAge() >= 30){
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee do not satisfied age 30"));
+        } else if (!employees.get(coordinator).getOnLeave().equals("false")) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee do not satisfied leave"));
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("employee is already supervisor"));
+        }
+    }
+
+    public int findById(String id){
+        for (int i = 0; i<employees.size(); i++){
+            if(employees.get(i).getId().equals(id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

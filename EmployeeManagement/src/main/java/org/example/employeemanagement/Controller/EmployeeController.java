@@ -1,5 +1,6 @@
 package org.example.employeemanagement.Controller;
 
+import ch.qos.logback.core.model.conditional.ElseModel;
 import jakarta.validation.Valid;
 import org.example.employeemanagement.Api.ApiResponse;
 import org.example.employeemanagement.Model.Employee;
@@ -58,6 +59,37 @@ public class EmployeeController {
             }
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("employee not found"));
+    }
+
+    @GetMapping("/show/{position}")
+    public ResponseEntity<?> getByPosition(@PathVariable String position){
+        ArrayList<Employee> byPosition;
+        if (position.equals("supervisor")){
+            byPosition = findByPosition(position);
+            if (byPosition.isEmpty()){
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("there is no "+position+" here"));
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(byPosition);
+            }
+        }else if (position.equals("coordinator")){
+           byPosition = findByPosition(position);
+            if (byPosition.isEmpty()){
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("there is no "+position+" here"));
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(byPosition);
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("you must write correct position: \"supervisor\" or \"coordinator\""));
+        }
+    }
+    public ArrayList<Employee> findByPosition(String position){
+        ArrayList<Employee> byPosition = new ArrayList<>();
+        for (Employee e : employees){
+            if (e.getPosition().equals(position)){
+                byPosition.add(e);
+            }
+        }
+        return byPosition;
     }
 
 

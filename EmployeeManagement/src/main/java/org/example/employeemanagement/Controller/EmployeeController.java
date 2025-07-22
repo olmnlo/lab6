@@ -132,4 +132,15 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee not found"));
     }
 
+    @GetMapping("/show/zero-annual")
+    public ResponseEntity<?> retrieveAllNoAnnual(){
+        ArrayList<Employee> notHaveAnnual = new ArrayList<>();
+        for (Employee e : employees){
+            if (e.getAnnualLeave() == 0){
+                notHaveAnnual.add(e);
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(notHaveAnnual);
+    }
 }

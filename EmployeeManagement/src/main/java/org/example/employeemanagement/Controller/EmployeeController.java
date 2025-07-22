@@ -93,4 +93,25 @@ public class EmployeeController {
     }
 
 
+    @GetMapping("/show/age/min/{minAge}/max/{maxAge}")
+    public ResponseEntity<?> getByAgeRange(@PathVariable int minAge,@PathVariable int maxAge){
+        if (minAge > maxAge){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("minAge must be less than or equal to maxAge"));
+        }else if(minAge < 25 || maxAge < 25){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Age must be 25 or more"));
+        }else {
+            ArrayList<Employee> byAge = new ArrayList<>();
+            for (Employee e : employees){
+                if (e.getAge()>=minAge && e.getAge()<=maxAge){
+                    byAge.add(e);
+                }
+            }
+            if (byAge.isEmpty()){
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("there is no employee in this range"));
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(byAge);
+            }
+        }
+    }
+
 }

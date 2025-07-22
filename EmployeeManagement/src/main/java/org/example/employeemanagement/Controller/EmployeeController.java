@@ -49,4 +49,16 @@ public class EmployeeController {
     }
 
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable String id){
+        for (int i = 0; i<employees.size(); i++){
+            if (employees.get(i).getId().equals(id)){
+                employees.remove(i);
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("employee deleted successfully"));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("employee not found"));
+    }
+
+
 }
